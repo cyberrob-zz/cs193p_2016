@@ -10,11 +10,11 @@ import UIKit
 
 class ViewController: UIViewController {
 
-    @IBOutlet weak var resultDisplay: UILabel!
+    @IBOutlet private weak var resultDisplay: UILabel!
+    private var isCurrentlyTyping = false
+    private var model = CalculatorModel()
     
-    var isCurrentlyTyping = false
-    
-    @IBAction func touchDigit(_ sender: UIButton) {
+    @IBAction private func touchDigit(_ sender: UIButton) {
         let digit = sender.currentTitle!
         if isCurrentlyTyping {
             resultDisplay.text = resultDisplay.text! + digit
@@ -24,13 +24,26 @@ class ViewController: UIViewController {
         isCurrentlyTyping = true
     }
     
-    @IBAction func performOperation(_ sender: UIButton) {
-        isCurrentlyTyping = false
-        if let mathSymbol = sender.currentTitle {
-            if mathSymbol == "π" {
-                resultDisplay.text = String(M_PI)
-            }
+    private var displayValue: Double {
+        get {
+            return Double(resultDisplay.text!)!
         }
+        set {
+            resultDisplay.text = String(newValue)
+        }
+    }
+    
+    @IBAction private func performOperation(_ sender: UIButton) {
+        if isCurrentlyTyping {
+            model.setOperand(operand: displayValue)
+            isCurrentlyTyping = false
+        }
+        
+        if let mathSymbol = sender.currentTitle {
+            model.performOperation(symbol: mathSymbol)
+        }
+        
+        displayValue = model.result
     }
 }
 
