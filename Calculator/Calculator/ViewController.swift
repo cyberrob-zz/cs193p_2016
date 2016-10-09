@@ -13,11 +13,25 @@ class ViewController: UIViewController {
     @IBOutlet private weak var resultDisplay: UILabel!
     private var isCurrentlyTyping = false
     private var model = CalculatorModel()
+    private var digitAfterDecimalPoint = 0.0
+    private var isDecimalPointClicked = false
     
     @IBAction private func touchDigit(_ sender: UIButton) {
         let digit = sender.currentTitle!
         if isCurrentlyTyping {
-            resultDisplay.text = resultDisplay.text! + digit
+            if(digit == ".") {
+                isDecimalPointClicked = true
+                print("Decimal point clicked")
+            } else {
+                if isDecimalPointClicked {
+                    digitAfterDecimalPoint += 1
+                    print("digit after decimal point \(digitAfterDecimalPoint)")
+                    resultDisplay.text =
+                        String(displayValue + Double(digit)! / Double(pow(10.0, digitAfterDecimalPoint)))
+                } else {
+                    resultDisplay.text = resultDisplay.text! + digit
+                }
+            }
         } else {
             resultDisplay.text = digit
         }
@@ -38,6 +52,10 @@ class ViewController: UIViewController {
             model.setOperand(operand: displayValue)
             isCurrentlyTyping = false
         }
+        
+        isDecimalPointClicked = false
+        digitAfterDecimalPoint = 0
+        print("digit after decimal point \(digitAfterDecimalPoint)")
         
         if let mathSymbol = sender.currentTitle {
             model.performOperation(symbol: mathSymbol)

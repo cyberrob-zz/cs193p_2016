@@ -42,7 +42,6 @@ class CalculatorModel {
         case Constant(Double)
         case UnaryOperation((Double)-> Double)
         case BinaryOperation((Double, Double) -> Double)
-//        case DotOperation((Double, Double) -> Double)
         case Equals
     }
     
@@ -59,30 +58,11 @@ class CalculatorModel {
             case .BinaryOperation(let function):
                 executePendingBinaryOperation()
                 pending = PendingBinaryOperationInfo(binaryFunction: function, firstOperand: accumulator)
-//            case .DotOperation(let firstOp, secondOp):
-//                dotPendingOp = PendingDotOperationInfo(firstOperand: firstOp, secondOperand: secondOp)
-//                executePendingDotOperation()
             case .Equals:
                 executePendingBinaryOperation()
             }
         }
     }
-    
-//    private func executePendingDotOperation() {
-//        if dotPendingOp != nil {
-//            accumulator = dotPendingOp!.dotFunction(dotPendingOp!.firstOperand, dotPendingOp!.secondOperand)
-//            dotPendingOp = nil
-//        }
-//    }
-//    
-//    var dotPendingOp: PendingDotOperationInfo?
-//    
-//    struct PendingDotOperationInfo {
-//        //var dotFunction: (Double, Double) -> Double
-//        var firstOperand: Double
-//        var secondOperand: Double
-//    }
-    
     
     private func executePendingBinaryOperation() {
         if pending != nil {
