@@ -11,6 +11,7 @@ import UIKit
 class ViewController: UIViewController {
 
     @IBOutlet private weak var resultDisplay: UILabel!
+    @IBOutlet weak var descriptionLabel: UILabel!
     private var isCurrentlyTyping = false
     private var model = CalculatorModel()
     private var digitAfterDecimalPoint = 0.0
@@ -35,6 +36,14 @@ class ViewController: UIViewController {
         } else {
             resultDisplay.text = digit
         }
+        
+        // Put digit into description
+        if model.description == nil {
+            model.description = resultDisplay.text!
+        } else {
+            model.description = model.description! + resultDisplay.text!
+        }
+        
         isCurrentlyTyping = true
     }
     
@@ -55,12 +64,19 @@ class ViewController: UIViewController {
         
         isDecimalPointClicked = false
         digitAfterDecimalPoint = 0
-        print("digit after decimal point \(digitAfterDecimalPoint)")
+        //print("digit after decimal point \(digitAfterDecimalPoint)")
         
         if let mathSymbol = sender.currentTitle {
+            if model.description != nil {
+                if mathSymbol != "AC" {
+                    model.description = model.description! + "\(" ")" + mathSymbol
+                } else {
+                    model.description = nil
+                }
+            }
             model.performOperation(symbol: mathSymbol)
         }
-        
+        descriptionLabel.text = model.description ?? "description"
         displayValue = model.result
     }
 }

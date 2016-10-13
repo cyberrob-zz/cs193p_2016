@@ -10,7 +10,15 @@ import Foundation
 
 class CalculatorModel {
     
+    var description:String? = nil
+    
+    //whether there is a binary operation pending
+    lazy var isPartialResult = false
+    
     private var accumulator = 0.0
+    
+   
+    
     
     var result: Double {
         get {
@@ -51,6 +59,7 @@ class CalculatorModel {
             case .Clear:
                 accumulator = 0.0
                 pending = nil
+                description = nil
             case .Constant(let associatedValue):
                 accumulator = associatedValue
             case .UnaryOperation(let associatedFunction):
