@@ -2,7 +2,7 @@
 //  ViewController.swift
 //  Calculator
 //
-//  Created by Bo Wen Wang on 2016/10/8.
+//  Created by Bo Wen Wang o 2016/10/8.
 //  Copyright © 2016年 Bo Wen Wang. All rights reserved.
 //
 
@@ -16,6 +16,7 @@ class ViewController: UIViewController {
     private var model = CalculatorModel()
     private var digitAfterDecimalPoint = 0.0
     private var isDecimalPointClicked = false
+
     
     @IBAction private func touchDigit(_ sender: UIButton) {
         let digit = sender.currentTitle!
@@ -37,14 +38,10 @@ class ViewController: UIViewController {
             resultDisplay.text = digit
         }
         
-        // Put digit into description
-        if model.description == nil {
-            model.description = resultDisplay.text!
-        } else {
-            model.description = model.description! + resultDisplay.text!
-        }
-        
+        // Just hand any input digit to the Model
+        model.setDescription(newDescription: resultDisplay.text!)
         isCurrentlyTyping = true
+        descriptionLabel.text = model.getDescription() ?? "Description"
     }
     
     private var displayValue: Double {
@@ -67,16 +64,10 @@ class ViewController: UIViewController {
         //print("digit after decimal point \(digitAfterDecimalPoint)")
         
         if let mathSymbol = sender.currentTitle {
-            if model.description != nil {
-                if mathSymbol != "AC" {
-                    model.description = model.description! + "\(" ")" + mathSymbol
-                } else {
-                    model.description = nil
-                }
-            }
             model.performOperation(symbol: mathSymbol)
         }
-        descriptionLabel.text = model.description ?? "description"
+        
+        descriptionLabel.text = model.getDescription() ?? "Description"
         displayValue = model.result
     }
 }

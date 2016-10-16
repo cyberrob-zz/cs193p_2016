@@ -9,16 +9,48 @@
 import Foundation
 
 class CalculatorModel {
-    
-    var description:String? = nil
-    
-    //whether there is a binary operation pending
-    lazy var isPartialResult = false
-    
     private var accumulator = 0.0
     
-   
+    let waitingSign = " ..."
+    let equalSign = " = \n"
     
+    private var description: String? = nil
+    
+    func setDescription(newDescription: String) {
+        print("New Description: \(newDescription)")
+        if description == nil {
+            description = newDescription
+        } else {
+            if isPartialResult {
+                if (operations[newDescription] != nil) {
+                    description = description!.appending(" " + newDescription + " ").appending(waitingSign)
+                } else {
+                    description = description!.replacingOccurrences(of: waitingSign, with: newDescription)
+                }
+                
+            } else {
+                if newDescription == "=" {
+                    description = description! + equalSign
+                } else {
+                    description = newDescription
+                }
+                if pending != nil {
+                    description = description!.replacingOccurrences(of: waitingSign, with: newDescription)
+                } else {
+                    description = description!.replacingOccurrences(of: waitingSign, with: equalSign)
+                }
+            }
+        }
+        
+        print("Description: \(description!)")
+    }
+    
+    func getDescription() -> String? {
+        return description
+    }
+    
+    //whether there is a binary operation pending
+    private var isPartialResult = false
     
     var result: Double {
         get {
@@ -53,21 +85,31 @@ class CalculatorModel {
         case Equals
     }
     
+    func resetAllParams() {
+        accumulator = 0.0
+        pending = nil
+        description = nil
+        isPartialResult = false
+        print("All Params are reset!")
+    }
+    
     func performOperation(symbol: String) {
         if let operation = operations[symbol] {
             switch operation {
             case .Clear:
-                accumulator = 0.0
-                pending = nil
-                description = nil
+                resetAllParams()
             case .Constant(let associatedValue):
                 accumulator = associatedValue
             case .UnaryOperation(let associatedFunction):
                 accumulator = associatedFunction(accumulator)
             case .BinaryOperation(let function):
+                isPartialResult = true
+                setDescription(newDescription: symbol)
                 executePendingBinaryOperation()
                 pending = PendingBinaryOperationInfo(binaryFunction: function, firstOperand: accumulator)
             case .Equals:
+                isPartialResult = false
+                setDescription(newDescription: symbol)
                 executePendingBinaryOperation()
             }
         }
