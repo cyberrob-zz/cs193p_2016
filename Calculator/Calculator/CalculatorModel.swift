@@ -25,7 +25,12 @@ class CalculatorModel {
                 if (operations[newDescription] != nil) {
                     description = description!.appending(" " + newDescription + " ").appending(waitingSign)
                 } else {
-                    description = description!.replacingOccurrences(of: waitingSign, with: newDescription)
+                    if description!.range(of: waitingSign) != nil {
+                        description = description!.replacingOccurrences(of: waitingSign, with: newDescription)
+                    } else {
+                        description =
+                            description!.appending(String(newDescription.characters.last!))
+                    }
                 }
                 
             } else {

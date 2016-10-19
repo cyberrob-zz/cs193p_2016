@@ -49,7 +49,13 @@ class ViewController: UIViewController {
             return Double(resultDisplay.text!)!
         }
         set {
-            resultDisplay.text = String(newValue)
+            var integer = 0.0
+            let fraction = modf(newValue, &integer)
+            if fraction == 0.0 {
+                resultDisplay.text = String(format: "%.0f", newValue)
+            } else {
+                resultDisplay.text = String(format: "%.6f", newValue)
+            }
         }
     }
     
