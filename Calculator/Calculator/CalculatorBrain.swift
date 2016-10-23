@@ -1,5 +1,5 @@
 //
-//  CalculatorModel.swift
+//  CalculatorBrain.swift
 //  Calculator
 //
 //  Created by Bo Wen Wang on 2016/10/8.
@@ -8,7 +8,28 @@
 
 import Foundation
 
-class CalculatorModel {
+class CalculatorBrain {
+    
+    typealias PropertyList = AnyObject
+    var program: PropertyList {
+        get {
+            return internalProgram as CalculatorBrain.PropertyList
+        }
+        set {
+            resetAllParams()
+            if let arrayOfOps = newValue as? [AnyObject] {
+                for op in arrayOfOps {
+                    if let operand = op as? Double {
+                        setOperand(operand: operand)
+                    } else if let operation = op as? String {
+                        performOperation(symbol: operation)
+                    }
+                }
+            }
+        }
+    }
+    private var internalProgram = [AnyObject]()
+    
     private var accumulator = 0.0
     
     let waitingSign = " ..."
@@ -65,6 +86,7 @@ class CalculatorModel {
     
     func setOperand(operand: Double) {
         accumulator = operand
+        internalProgram.append(operand as AnyObject)
     }
     
     private var operations: Dictionary<String, Operation> = [
@@ -95,10 +117,12 @@ class CalculatorModel {
         pending = nil
         description = nil
         isPartialResult = false
+        internalProgram.removeAll()
         print("All Params are reset!")
     }
     
     func performOperation(symbol: String) {
+        internalProgram.append(symbol as AnyObject)
         if let operation = operations[symbol] {
             switch operation {
             case .Clear:

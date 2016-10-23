@@ -13,10 +13,9 @@ class ViewController: UIViewController {
     @IBOutlet private weak var resultDisplay: UILabel!
     @IBOutlet weak var descriptionLabel: UILabel!
     private var isCurrentlyTyping = false
-    private var model = CalculatorModel()
+    private var model = CalculatorBrain()
     private var digitAfterDecimalPoint = 0.0
     private var isDecimalPointClicked = false
-
     
     @IBAction private func touchDigit(_ sender: UIButton) {
         let digit = sender.currentTitle!
